@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
 
 public class CommandRegister extends Command {
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    private static final String API_ENDPOINT = "https://forum.uhcgames.com/api_register.php";
-    private static final String API_TOKEN = "token";
 
     private final Main plugin;
     private final OkHttpClient httpClient;
@@ -58,13 +56,13 @@ public class CommandRegister extends Command {
             public void run() {
                 try {
                     RequestBody formBody = new FormEncodingBuilder()
-                            .add("token", API_TOKEN)
+                            .add("token", Main.API_TOKEN)
                             .add("email", email)
                             .add("username", sender.getName())
                             .add("uuid", "" + p.getUniqueId())
                             .add("password", password)
                             .build();
-                    Request request = new Request.Builder().url(API_ENDPOINT).post(formBody).build();
+                    Request request = new Request.Builder().url(Main.API_ENDPOINT).post(formBody).build();
                     int code = httpClient.newCall(request).execute().code();
 
                     if (p.hasPermission("bungee.debug.register"))

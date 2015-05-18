@@ -47,6 +47,8 @@ import java.util.logging.Logger;
 public class Main extends Plugin {
     public static final BaseComponent[] SEPARATOR = TextComponent.fromLegacyText(ChatColor.YELLOW + "-----------------------------------------------------");
     public static final String ADMIN_TAG = ChatColor.RED + "[BungeeGuard] " + ChatColor.RESET;
+    public static final String API_TOKEN;
+    public static final String API_ENDPOINT;
     private static final List<String> forbiddenCommands = new ArrayList<>();
     @Getter
     private static final MultiBungee MB = new MultiBungee();
@@ -59,6 +61,12 @@ public class Main extends Plugin {
     public static Gson gson = new Gson();
     @Getter
     static ServerManager serverManager;
+
+    static {
+        API_TOKEN = getEnv("API_TOKEN", null, null);
+        API_ENDPOINT = getEnv("API_ENDPOINT", "https://forum.uhcgames.com/api_register.php", null);
+    }
+
     @Getter
     final FriendManager friendManager = new FriendManager(this);
     private final List<String> silencedServers = new ArrayList<>();
@@ -95,6 +103,15 @@ public class Main extends Plugin {
 
     public static Logger logger() {
         return Main.plugin.getLogger();
+    }
+
+    private static String getEnv(String name, String def, Properties prop) {
+        String property = (prop == null) ? def : prop.getProperty(name, def);
+        try {
+            return MoreObjects.firstNonNull(System.getenv(name), property);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     public List<String> getForbiddenCommands() {
@@ -138,11 +155,6 @@ public class Main extends Plugin {
         return F;
     }
 
-    private String getEnv(String name, String def, Properties prop) {
-        String property = (prop == null) ? def : prop.getProperty(name, def);
-        return MoreObjects.firstNonNull(System.getenv(name), property);
-    }
-
     @Override
     public void onLoad() {
         plugin = this;
@@ -162,10 +174,12 @@ public class Main extends Plugin {
         }
 
         // RAVEN
-        RavenFactory.registerFactory(new DefaultRavenFactory());
-        String SENTRY_ENDPOINT = getEnv("SENTRY_ENDPOINT", "https://e0cb123c9b3d4488b2584b32beb97fdd:db2bf46f241c4d7f924de6ec10b2ab07@app.getsentry.com/40574?raven.async=false", prop);
-        Raven raven = RavenFactory.ravenInstance(SENTRY_ENDPOINT);
-        ProxyServer.getInstance().getLogger().addHandler(new SentryHandler(raven, getDescription().getVersion()));
+        String SENTRY_ENDPOINT = getEnv("SENTRY_ENDPOINT", null, prop);
+        if (SENTRY_ENDPOINT != null) {
+            RavenFactory.registerFactory(new DefaultRavenFactory());
+            Raven raven = RavenFactory.ravenInstance(SENTRY_ENDPOINT);
+            ProxyServer.getInstance().getLogger().addHandler(new SentryHandler(raven, getDescription().getVersion()));
+        }
         // END RAVEN
 
         MYSQL_HOST = getEnv("MYSQL_HOST", "localhost", prop);

@@ -1,8 +1,6 @@
 BungeeGuard
 ========
 
-![](http://ci.uhcwork.net/badge/BungeeGuard)
-
 BungeeGuard is the BungeeCord plugin handling everything on the  [UHCGames](http://UHCGames.com) server.
 
 Features
@@ -24,16 +22,6 @@ Installation
 Install BungeeGuard as a BungeeCord plugin. It has no configuration file, it uses environment variables instead.
 Namely: `SENTRY_ENDPOINT`, `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASS`
 
-Contribute
-----------
-
-- [Issue Tracker](http://git.uhcwork.net/bungee-uhcgames/bungeeguard/issues)
-- [Source Code](http://git.uhcwork.net/bungee-uhcgames/bungeeguard)
-
-Support
--------
-
-If you are having issues, please let us know via issues.
 
 License
 -------

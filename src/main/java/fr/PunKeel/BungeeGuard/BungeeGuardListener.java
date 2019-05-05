@@ -420,7 +420,6 @@ public class BungeeGuardListener implements Listener {
     @EventHandler
     public void onConnected(final ServerConnectedEvent e) {
         final ProxiedPlayer p = e.getPlayer();
-        plugin.getPluginMessageManager().sendFriendList(p, e.getServer());
         plugin.getPluginMessageManager().sendPartyInfo(p, e.getServer());
     }
 
